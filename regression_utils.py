@@ -132,3 +132,79 @@ def run_leniency_regression(df):
             'significant': model.pvalues[var] < 0.05,
         })
     return results
+
+
+@st.cache_data
+def get_fitted_model(df):
+    """Return the fitted OLS model params for prediction use."""
+    X, y = _prepare_features(df)
+    model = sm.OLS(y, X).fit(cov_type='HC1')
+    return dict(model.params), list(X.columns)
+
+
+@st.cache_data
+def predict_sentence(df, offense_code, age, crim_pts, guideline_min, is_female, is_citizen, has_weapon):
+    """
+    Predict sentence for White, Black, and Hispanic defendants with given characteristics.
+    Returns dict: {race: predicted_months}
+    """
+    params, col_names = get_fitted_model(df)
+
+    base = {col: 0.0 for col in col_names}
+    base['const'] = 1.0
+    base['AGE'] = age
+    base['CRIMPTS'] = crim_pts
+    base['XMINSOR'] = guideline_min
+    base['Female'] = 1 if is_female else 0
+    base['IllegalAlien'] = 0 if is_citizen else 1
+    base['WEAPON'] = 1 if has_weapon else 0
+
+    # Set offense dummy
+    off_col = f'off_{offense_code}'
+    if off_col in base:
+        base[off_col] = 1
+
+    results = {}
+    for race, black_val, hisp_val in [("White", 0, 0), ("Black", 1, 0), ("Hispanic", 0, 1)]:
+        row = base.copy()
+        row['Black'] = black_val
+        row['Hispanic'] = hisp_val
+        pred = sum(row[col] * params.get(col, 0) for col in col_names)
+        results[race] = max(0, round(pred, 1))
+
+    return results
+
+
+@st.cache_data
+def compute_human_cost(df):
+    """
+    Compute aggregate human cost of the racial gap.
+    Returns dict with total extra years, by offense, etc.
+    """
+    # Get per-offense Black effect
+    offense_effects = run_offense_regressions(df)
+
+    total_extra_months = 0
+    offense_costs = []
+
+    for _, row in offense_effects.iterrows():
+        if row['Black_Effect'] <= 0:
+            continue
+        # Count Black defendants for this offense
+        off_data = df[(df['Offense'] == row['Offense']) & (df['Race'] == 'Black')]
+        n_black = len(off_data)
+        extra = row['Black_Effect'] * n_black
+        total_extra_months += extra
+        offense_costs.append({
+            'Offense': row['Offense'],
+            'Black_Effect_Mo': row['Black_Effect'],
+            'N_Black': n_black,
+            'Extra_Months': round(extra),
+            'Extra_Years': round(extra / 12, 1),
+        })
+
+    return {
+        'total_extra_months': round(total_extra_months),
+        'total_extra_years': round(total_extra_months / 12),
+        'by_offense': pd.DataFrame(offense_costs).sort_values('Extra_Months', ascending=False),
+    }

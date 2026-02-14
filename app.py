@@ -12,7 +12,8 @@ from districts import DISTRICT_MAP
 from district_coords import DISTRICT_COORDS
 from regression_utils import (
     run_overall_regression, run_yearly_regression,
-    run_offense_regressions, run_leniency_regression
+    run_offense_regressions, run_leniency_regression,
+    predict_sentence, compute_human_cost
 )
 
 st.set_page_config(page_title="Justice Index", page_icon="⚖️", layout="wide")
@@ -142,12 +143,15 @@ with st.sidebar:
 
     page = st.radio("Navigate", [
         "🏠 Same Crime, Different Time",
+        "🪞 What Would Your Sentence Be?",
         "📈 The Trend",
         "🗺️ The Lottery",
         "🔎 Your District",
+        "💔 The Human Cost",
         "🔬 The Evidence",
         "👤 Gender Gap",
         "⚖️ Plea vs Trial",
+        "✊ Take Action",
         "📖 About"
     ], label_visibility="collapsed")
 
@@ -278,6 +282,118 @@ if page == "🏠 Same Crime, Different Time":
         
         st.caption("⚠️ Raw averages — not controlled for criminal history, guidelines, or other factors. "
                    "See 'The Evidence' page for controlled regression results.")
+
+    st.markdown(FOOTER, unsafe_allow_html=True)
+
+# ══════════════════════════════════════════════════════════════
+# PAGE 1B: WHAT WOULD YOUR SENTENCE BE?
+# ══════════════════════════════════════════════════════════════
+elif page == "🪞 What Would Your Sentence Be?":
+    st.markdown("""
+    <div class="hero-banner">
+        <h1>What Would Your Sentence Be?</h1>
+        <p>Same crime. Same history. Same judge. The only thing that changes is race.<br>
+        Enter a profile below and see what the data predicts.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    OFFENSE_OPTIONS = {
+        "Drug Trafficking": 10, "Firearms": 13, "Fraud/Theft/Embezzlement": 16,
+        "Robbery": 26, "Assault": 4, "Money Laundering": 21,
+        "Immigration": 17, "Child Pornography": 7, "Sexual Abuse": 27,
+        "Murder": 22, "Bribery/Corruption": 5,
+    }
+
+    c1, c2 = st.columns(2)
+    with c1:
+        sel_offense = st.selectbox("Federal offense", list(OFFENSE_OPTIONS.keys()), index=0,
+                                    key="calc_offense")
+        sel_age = st.slider("Age at sentencing", 18, 75, 32)
+        sel_crim = st.slider("Criminal history points", 0, 20, 2,
+                              help="0 = no prior convictions. Higher = more priors.")
+    with c2:
+        sel_guideline = st.slider("Guideline minimum (months)", 0, 240, 60,
+                                   help="The recommended minimum from sentencing guidelines")
+        sel_female = st.checkbox("Female defendant")
+        sel_weapon = st.checkbox("Weapon involved")
+        sel_citizen = st.checkbox("US citizen", value=True)
+
+    st.divider()
+
+    # Get predictions
+    predictions = predict_sentence(
+        df, OFFENSE_OPTIONS[sel_offense], sel_age, sel_crim,
+        sel_guideline, sel_female, sel_citizen, sel_weapon
+    )
+
+    # Display results
+    st.markdown("### Your Predicted Sentence")
+
+    cols = st.columns(3)
+    for i, race in enumerate(["White", "Black", "Hispanic"]):
+        pred = predictions[race]
+        color = RACE_COLORS[race]
+        with cols[i]:
+            st.markdown(f"""
+            <div class="race-card" style="background: linear-gradient(135deg, {color}12, {color}06);
+                        border-left: 5px solid {color}; text-align: center;">
+                <div style="color: {color}; font-weight: 600; text-transform: uppercase;
+                            letter-spacing: 0.5px; font-size: 0.9em;">If you were {race}</div>
+                <div class="big-number" style="color: {color};">{pred:.0f}<span style="font-size:0.35em; font-weight:500;"> months</span></div>
+                <div class="stat-label">{pred/12:.1f} years</div>
+            </div>
+            """, unsafe_allow_html=True)
+
+    # The gap
+    bw_gap = predictions["Black"] - predictions["White"]
+    hw_gap = predictions["Hispanic"] - predictions["White"]
+
+    if abs(bw_gap) >= 0.5:
+        who = "Black" if bw_gap > 0 else "White"
+        st.markdown(f"""
+        <div class="gap-callout">
+            <div class="context">For this exact profile — same crime, same history, same everything:</div>
+            <div class="number">{abs(bw_gap):.1f} extra months</div>
+            <div class="context">
+                if you're <b>{who}</b> instead of <b>{'White' if bw_gap > 0 else 'Black'}</b><br>
+                That's <b>{abs(bw_gap)/12:.1f} extra years</b> away from your family.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # Visualization
+    fig = go.Figure()
+    for race in ["White", "Black", "Hispanic"]:
+        fig.add_trace(go.Bar(
+            x=[race], y=[predictions[race]],
+            name=race, marker_color=RACE_COLORS[race],
+            text=[f"{predictions[race]:.0f} mo"], textposition="outside"
+        ))
+    fig.update_layout(
+        title="Predicted Sentence by Race",
+        yaxis_title="Predicted Sentence (months)",
+        height=400, template="plotly_white", showlegend=False,
+        yaxis=dict(range=[0, max(predictions.values()) * 1.2])
+    )
+    st.plotly_chart(fig, width="stretch")
+
+    # Context
+    st.markdown(f"""
+    <div class="share-box">
+        <div class="headline">📋 What This Means</div>
+        According to our regression model (R² ≈ 0.74, based on {len(df):,} federal cases), a 
+        {sel_age}-year-old {'woman' if sel_female else 'man'} convicted of federal {sel_offense.lower()}
+        with {sel_crim} criminal history points and a {sel_guideline}-month guideline minimum
+        would receive <b>{predictions['White']:.0f} months</b> if White, 
+        <b>{predictions['Black']:.0f} months</b> if Black, and 
+        <b>{predictions['Hispanic']:.0f} months</b> if Hispanic.
+        {f'<br><br>The <b>{abs(bw_gap):.1f}-month gap</b> between Black and White defendants exists even after controlling for every legal factor in the data.' if abs(bw_gap) >= 0.5 else ''}
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.caption("⚠️ These are statistical predictions based on historical patterns, not individual case outcomes. "
+               "Real sentences depend on many factors not captured in this model, including judge, attorney quality, "
+               "and specific case circumstances.")
 
     st.markdown(FOOTER, unsafe_allow_html=True)
 
@@ -713,6 +829,127 @@ elif page == "🔎 Your District":
     st.markdown(FOOTER, unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════
+# PAGE: THE HUMAN COST
+# ══════════════════════════════════════════════════════════════
+elif page == "💔 The Human Cost":
+    st.markdown("""
+    <div class="hero-banner" style="background: linear-gradient(135deg, #2d0a0a 0%, #4a1010 50%, #6b1a1a 100%);">
+        <h1>The Human Cost</h1>
+        <p>Behind every statistic is someone's parent, child, or partner. Here's what the racial gap 
+        adds up to across hundreds of thousands of cases.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    with st.spinner("Computing aggregate impact..."):
+        cost = compute_human_cost(df)
+
+    # Big number hero
+    st.markdown(f"""
+    <div style="text-align: center; padding: 32px 0;">
+        <div style="font-size: 4em; font-weight: 800; color: #E45756; line-height: 1;">
+            {cost['total_extra_years']:,}
+        </div>
+        <div style="font-size: 1.3em; color: #555; margin-top: 8px;">
+            extra years of prison time
+        </div>
+        <div style="font-size: 1em; color: #888; margin-top: 4px;">
+            served by Black defendants due to the racial sentencing gap (FY2019–2024)
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.divider()
+
+    # Put it in perspective
+    st.markdown("### What Does That Look Like?")
+
+    total_years = cost['total_extra_years']
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        st.markdown(f"""
+        <div style="text-align: center; padding: 16px;">
+            <div style="font-size: 2.5em; font-weight: 800; color: #E45756;">⏰</div>
+            <div style="font-size: 1.8em; font-weight: 700; color: #333;">{total_years:,} years</div>
+            <div style="color: #666;">of human life — time that can never be returned</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with c2:
+        lifetimes = total_years / 78  # avg US lifespan
+        st.markdown(f"""
+        <div style="text-align: center; padding: 16px;">
+            <div style="font-size: 2.5em; font-weight: 800; color: #E45756;">👤</div>
+            <div style="font-size: 1.8em; font-weight: 700; color: #333;">{lifetimes:.0f} lifetimes</div>
+            <div style="color: #666;">worth of extra prison time (at avg US lifespan of 78 years)</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with c3:
+        daily = total_years * 365
+        st.markdown(f"""
+        <div style="text-align: center; padding: 16px;">
+            <div style="font-size: 2.5em; font-weight: 800; color: #E45756;">📅</div>
+            <div style="font-size: 1.8em; font-weight: 700; color: #333;">{daily:,.0f}</div>
+            <div style="color: #666;">days — birthdays missed, children growing up without a parent</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.divider()
+
+    # Breakdown by offense
+    st.markdown("### Where the Extra Time Comes From")
+
+    by_off = cost['by_offense']
+    if len(by_off) > 0:
+        fig = go.Figure()
+        fig.add_trace(go.Bar(
+            y=by_off["Offense"], x=by_off["Extra_Years"],
+            orientation="h", marker_color="#E45756",
+            text=[f"{y:,.0f} years ({e:+.1f} mo × {n:,} defendants)"
+                  for y, e, n in zip(by_off["Extra_Years"], by_off["Black_Effect_Mo"], by_off["N_Black"])],
+            textposition="outside"
+        ))
+        fig.update_layout(
+            title="Extra Prison Years by Offense Type<br><sub>Black effect (months) × number of Black defendants</sub>",
+            xaxis_title="Extra years of prison time",
+            height=max(400, len(by_off) * 35), template="plotly_white"
+        )
+        st.plotly_chart(fig, width="stretch")
+
+    # Per-case context
+    st.divider()
+    st.markdown("### What It Means for One Person")
+
+    overall = run_overall_regression(df)
+    black_effect = [c for c in overall["coefficients"] if "Black" in c["variable"]][0]["effect"]
+
+    st.markdown(f"""
+    <div style="background: #f8f9fa; padding: 24px; border-radius: 12px; border-left: 4px solid #E45756;">
+        <p style="font-size: 1.1em; line-height: 1.6; color: #333; margin: 0;">
+            The average extra penalty for being Black is <b>{black_effect:+.1f} months</b>. 
+            That might not sound like much. But imagine:
+        </p>
+        <ul style="font-size: 1.05em; line-height: 1.8; color: #444; margin-top: 12px;">
+            <li><b>{black_effect:.0f} months</b> is a child going from kindergarten to first grade — without their parent</li>
+            <li><b>{black_effect:.0f} months</b> of lost wages, lost housing stability, lost community ties</li>
+            <li><b>{black_effect:.0f} months</b> that compound — making reentry harder, recidivism more likely</li>
+            <li>Multiply by <b>{len(df[df['Race']=='Black']):,}</b> Black defendants in just six years</li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown(f"""
+    <div class="share-box">
+        <div class="headline">📋 Share This</div>
+        Between 2019 and 2024, the racial sentencing gap in US federal courts cost Black defendants 
+        an estimated <b>{cost['total_extra_years']:,} extra years</b> of prison time — the equivalent 
+        of <b>{lifetimes:.0f} full human lifetimes</b>. This is based on {len(df):,} cases from the 
+        US Sentencing Commission, controlling for offense type, guidelines, criminal history, and demographics.
+        Source: Justice Index.
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown(FOOTER, unsafe_allow_html=True)
+
+# ══════════════════════════════════════════════════════════════
 # PAGE 4: THE EVIDENCE (live regression)
 # ══════════════════════════════════════════════════════════════
 elif page == "🔬 The Evidence":
@@ -960,6 +1197,122 @@ elif page == "⚖️ Plea vs Trial":
     st.info("""💡 **Why this matters:** The 6th Amendment guarantees the right to trial. But exercising that right
     comes with a massive "trial penalty" — and that penalty falls harder on Black defendants. This creates
     pressure to accept plea deals, even for those who may be innocent.""")
+
+    st.markdown(FOOTER, unsafe_allow_html=True)
+
+# ══════════════════════════════════════════════════════════════
+# PAGE: TAKE ACTION
+# ══════════════════════════════════════════════════════════════
+elif page == "✊ Take Action":
+    st.markdown("""
+    <div class="hero-banner" style="background: linear-gradient(135deg, #1a3a1a 0%, #2d5a2d 50%, #3a7a3a 100%);">
+        <h1>Take Action</h1>
+        <p>Data without action is just numbers. Here's how you can help close the gap.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("## 📣 Spread the Word")
+    st.markdown("""
+    The most important thing you can do right now is **share this data**. 
+    Most people don't know these disparities exist — or assume they're getting better (they're not).
+    
+    - **Share on social media** — use the shareable findings from any page
+    - **Send to a journalist** — data-driven stories change public opinion
+    - **Cite in papers** — if you're in academia, reference this analysis
+    - **Talk about it** — dinner tables, classrooms, workplaces
+    """)
+
+    st.divider()
+
+    st.markdown("## 🏛️ Contact Your Representatives")
+    st.markdown("""
+    Federal sentencing is shaped by **Congress** (who writes sentencing laws), the **US Sentencing Commission** 
+    (who sets guidelines), and **the Executive Branch** (who appoints judges and sets DOJ policy).
+    
+    **Key asks for your representatives:**
+    - Support the **EQUAL Act** and similar sentencing reform bills
+    - Fund the US Sentencing Commission to study and address demographic disparities
+    - Support mandatory bias training for federal judges
+    - Push for transparency in prosecutorial charging decisions
+    - Advocate for data-driven sentencing review at the circuit level
+    """)
+
+    c1, c2 = st.columns(2)
+    with c1:
+        st.link_button("🇺🇸 Find Your Senator", "https://www.senate.gov/senators/senators-contact.htm", use_container_width=True)
+    with c2:
+        st.link_button("🏠 Find Your Representative", "https://www.house.gov/representatives/find-your-representative", use_container_width=True)
+
+    st.divider()
+
+    st.markdown("## 🤝 Support Organizations Working on This")
+    st.markdown("""
+    These organizations are actively fighting sentencing disparities:
+    
+    - **[The Sentencing Project](https://www.sentencingproject.org/)** — Research and advocacy for fair sentencing
+    - **[FAMM (Families Against Mandatory Minimums)](https://famm.org/)** — Fighting excessive sentencing
+    - **[The Marshall Project](https://www.themarshallproject.org/)** — Nonprofit journalism on criminal justice
+    - **[The Innocence Project](https://innocenceproject.org/)** — Freeing the wrongly convicted
+    - **[Equal Justice Initiative](https://eji.org/)** — Bryan Stevenson's organization fighting racial injustice
+    - **[ACLU Criminal Law Reform](https://www.aclu.org/issues/smart-justice)** — Systemic reform advocacy
+    - **[Vera Institute of Justice](https://www.vera.org/)** — Research-driven policy change
+    """)
+
+    st.divider()
+
+    st.markdown("## 📊 Use the Data")
+    st.markdown("""
+    This project is **open source**. The data is public. Use it.
+    
+    - **Journalists:** Everything here is based on official US Sentencing Commission data. 
+      [Contact us](mailto:justice.index.project@gmail.com) for the full dataset or custom analysis.
+    - **Researchers:** Our code is on [GitHub](https://github.com/brunobossgang/justice-index). 
+      Fork it, improve it, cite it.
+    - **Lawyers:** Use district-level data to support motions for variance based on 
+      documented geographic or racial disparities.
+    - **Policy makers:** The data shows exactly where disparities are worst — by offense, 
+      by district, by year. Target interventions where they matter most.
+    """)
+
+    st.divider()
+
+    st.markdown("## 💡 What Would Actually Fix This?")
+    st.markdown("""
+    Based on what the data shows, here are evidence-based reforms that could reduce the gap:
+    
+    1. **Algorithmic sentencing audits** — Require federal courts to run annual disparity analyses 
+       on their own sentencing data, flagging outlier judges and districts.
+    
+    2. **Structured sentencing decisions** — Require judges to document specific reasons for 
+       departures from guidelines, with mandatory review of racial patterns.
+    
+    3. **Prosecutorial transparency** — Charge data is the biggest unmeasured factor. 
+       Require DOJ to publish charging decisions by defendant demographics.
+    
+    4. **Public defender funding** — Attorney quality drives outcomes. Equalizing defense 
+       resources would likely reduce the gap more than any single policy.
+    
+    5. **Eliminate the trial penalty** — The racial gap widens dramatically at trial. 
+       Reforms to reduce the punishment for exercising the 6th Amendment would disproportionately 
+       help Black defendants.
+    
+    6. **Circuit-level review boards** — Each circuit should have an independent body 
+       reviewing sentencing patterns and publishing annual scorecards.
+    """)
+
+    # Share box
+    overall = run_overall_regression(df)
+    black_effect = [c for c in overall["coefficients"] if "Black" in c["variable"]][0]["effect"]
+    st.markdown(f"""
+    <div class="share-box">
+        <div class="headline">📋 The Ask</div>
+        In US federal courts, Black defendants receive <b>+{black_effect:.1f} extra months</b> 
+        after controlling for every legal factor — and it's getting worse. 
+        Contact your senators at <a href="https://www.senate.gov/senators/senators-contact.htm">senate.gov</a> 
+        and ask them to support sentencing reform. 
+        See the full data at <a href="https://justiceindex.org">justiceindex.org</a>.
+    </div>
+    """, unsafe_allow_html=True)
 
     st.markdown(FOOTER, unsafe_allow_html=True)
 

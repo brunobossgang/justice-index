@@ -98,8 +98,10 @@ def load_data():
     race_map = {1: "White", 2: "Black", 3: "Hispanic"}
     sex_map = {0: "Male", 1: "Female"}
     offense_map = {
-        1: "Admin of Justice", 4: "Assault", 5: "Bribery/Corruption",
-        7: "Child Pornography", 9: "Drug Possession", 10: "Drug Trafficking",
+        1: "Admin of Justice", 2: "Antitrust", 3: "Arson",
+        4: "Assault", 5: "Bribery/Corruption", 6: "Burglary/Trespass",
+        7: "Child Pornography", 8: "Commercialized Vice",
+        9: "Drug Possession", 10: "Drug Trafficking",
         11: "Environmental", 12: "Extortion/Racketeering", 13: "Firearms",
         14: "Food & Drug", 15: "Forgery/Counterfeiting", 16: "Fraud/Theft/Embezzlement",
         17: "Immigration", 18: "Individual Rights", 19: "Kidnapping",
@@ -372,25 +374,29 @@ elif page == "📈 The Trend":
                 "This gap hasn't moved in six years.")
 
     with tab3:
-        # Compute offense trends live
-        off_yearly = {}
-        for offense in ["Drug Trafficking", "Firearms", "Robbery"]:
-            years_data = []
-            for year in sorted(df["Year"].unique()):
-                sub = df[(df["Offense"] == offense) & (df["Year"] == year)]
-                if len(sub) < 100:
-                    continue
-                try:
-                    from regression_utils import _prepare_features
-                    import statsmodels.api as sm_api
-                    X, y = _prepare_features(sub, include_offense_dummies=False)
-                    if len(y) < 50:
+        @st.cache_data
+        def compute_offense_trends(_df):
+            import statsmodels.api as sm_api
+            from regression_utils import _prepare_features
+            results = {}
+            for offense in ["Drug Trafficking", "Firearms", "Robbery"]:
+                years_data = []
+                for year in sorted(_df["Year"].unique()):
+                    sub = _df[(_df["Offense"] == offense) & (_df["Year"] == year)]
+                    if len(sub) < 100:
                         continue
-                    m = sm_api.OLS(y, X).fit(cov_type='HC1')
-                    years_data.append({"Year": year, "Effect": round(m.params["Black"], 1)})
-                except Exception:
-                    continue
-            off_yearly[offense] = pd.DataFrame(years_data)
+                    try:
+                        X, y = _prepare_features(sub, include_offense_dummies=False)
+                        if len(y) < 50:
+                            continue
+                        m = sm_api.OLS(y, X).fit(cov_type='HC1')
+                        years_data.append({"Year": year, "Effect": round(m.params["Black"], 1)})
+                    except Exception:
+                        continue
+                results[offense] = pd.DataFrame(years_data)
+            return results
+
+        off_yearly = compute_offense_trends(df)
 
         off_choice = st.selectbox("Select offense", ["Drug Trafficking", "Firearms", "Robbery"])
 
@@ -659,14 +665,19 @@ elif page == "🔎 Your District":
     # Trend over time for this district
     st.divider()
     st.markdown("### Sentencing Trend")
-    yr_stats = dist_df.groupby(["Year", "Race"])["SENTTOT"].mean().reset_index()
+    # Only show race lines with enough data per year
+    yr_stats = dist_df.groupby(["Year", "Race"])["SENTTOT"].agg(["mean", "count"]).reset_index()
+    yr_stats = yr_stats[yr_stats["count"] >= 10]  # filter noisy years
 
-    fig2 = px.line(yr_stats, x="Year", y="SENTTOT", color="Race",
-                   color_discrete_map=RACE_COLORS, markers=True,
-                   labels={"SENTTOT": "Average Sentence (months)"})
-    fig2.update_layout(title=f"Average Sentence Over Time in {selected_dist}",
-                      height=400, template="plotly_white")
-    st.plotly_chart(fig2, width="stretch")
+    if len(yr_stats) > 2:
+        fig2 = px.line(yr_stats, x="Year", y="mean", color="Race",
+                       color_discrete_map=RACE_COLORS, markers=True,
+                       labels={"mean": "Average Sentence (months)"})
+        fig2.update_layout(title=f"Average Sentence Over Time in {selected_dist}",
+                          height=400, template="plotly_white")
+        st.plotly_chart(fig2, width="stretch")
+    else:
+        st.info("Not enough yearly data to show a meaningful trend for this district.")
 
     # Ranking among all districts
     st.divider()
@@ -715,7 +726,8 @@ elif page == "🔬 The Evidence":
     tab1, tab2, tab3 = st.tabs(["🎯 Overall Model", "📋 By Offense", "⚖️ Who Gets Leniency?"])
 
     with tab1:
-        overall = run_overall_regression(df)
+        with st.spinner("Running regression on 322,000+ cases..."):
+            overall = run_overall_regression(df)
         st.markdown(f"### Full Model: What Predicts Sentence Length?")
         st.markdown(f"OLS regression on **{overall['n_obs']:,}** cases (FY2019–2024). **R² = {overall['r_squared']:.2f}**. Robust standard errors (HC1).")
 
@@ -1017,7 +1029,7 @@ elif page == "📖 About":
 
     ## Open Source
 
-    All analysis code is available in the Justice Index repository.
+    All analysis code is available on [GitHub](https://github.com/brunobossgang/justice-index).
     Data is publicly available from the [US Sentencing Commission](https://www.ussc.gov/research/datafiles/commission-datafiles).
 
     ---

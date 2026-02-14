@@ -1,0 +1,65 @@
+
+  You can now view your Streamlit app in your browser.
+
+  Local URL: http://localhost:8501
+  Network URL: http://192.168.3.147:8501
+  External URL: http://212.107.133.220:8501
+
+  For better performance, install the Watchdog module:
+
+  $ xcode-select --install
+  $ pip install watchdog
+            
+2026-02-14 11:26:39.852 `label` got an empty value. This is discouraged for accessibility reasons and may be disallowed in the future by raising an exception. Please provide a non-empty label and hide it with label_visibility if needed.
+Stack (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/threading.py", line 1012, in _bootstrap
+    self._bootstrap_inner()
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/threading.py", line 1041, in _bootstrap_inner
+    self.run()
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/threading.py", line 992, in run
+    self._target(*self._args, **self._kwargs)
+  File "/Users/brunobeckman/.openclaw/workspace/JusticeIndex/.venv/lib/python3.13/site-packages/streamlit/runtime/scriptrunner/script_runner.py", line 379, in _run_script_thread
+    self._run_script(request.rerun_data)
+  File "/Users/brunobeckman/.openclaw/workspace/JusticeIndex/.venv/lib/python3.13/site-packages/streamlit/runtime/scriptrunner/script_runner.py", line 705, in _run_script
+    ) = exec_func_with_error_handling(code_to_exec, ctx)
+  File "/Users/brunobeckman/.openclaw/workspace/JusticeIndex/.venv/lib/python3.13/site-packages/streamlit/runtime/scriptrunner/exec_code.py", line 129, in exec_func_with_error_handling
+    result = func()
+  File "/Users/brunobeckman/.openclaw/workspace/JusticeIndex/.venv/lib/python3.13/site-packages/streamlit/runtime/scriptrunner/script_runner.py", line 689, in code_to_exec
+    exec(code, module.__dict__)  # noqa: S102
+  File "/Users/brunobeckman/.openclaw/workspace/JusticeIndex/app.py", line 82, in <module>
+    page = st.radio("", [
+  File "/Users/brunobeckman/.openclaw/workspace/JusticeIndex/.venv/lib/python3.13/site-packages/streamlit/runtime/metrics_util.py", line 532, in wrapped_func
+    result = non_optional_func(*args, **kwargs)
+  File "/Users/brunobeckman/.openclaw/workspace/JusticeIndex/.venv/lib/python3.13/site-packages/streamlit/elements/widgets/radio.py", line 364, in radio
+    return self._radio(
+  File "/Users/brunobeckman/.openclaw/workspace/JusticeIndex/.venv/lib/python3.13/site-packages/streamlit/elements/widgets/radio.py", line 409, in _radio
+    maybe_raise_label_warnings(label, label_visibility)
+  File "/Users/brunobeckman/.openclaw/workspace/JusticeIndex/.venv/lib/python3.13/site-packages/streamlit/elements/lib/policies.py", line 184, in maybe_raise_label_warnings
+    _LOGGER.warning(
+2026-02-14 11:26:39.856 Uncaught app execution
+Traceback (most recent call last):
+  File "/Users/brunobeckman/.openclaw/workspace/JusticeIndex/.venv/lib/python3.13/site-packages/streamlit/runtime/scriptrunner/exec_code.py", line 129, in exec_func_with_error_handling
+    result = func()
+  File "/Users/brunobeckman/.openclaw/workspace/JusticeIndex/.venv/lib/python3.13/site-packages/streamlit/runtime/scriptrunner/script_runner.py", line 689, in code_to_exec
+    exec(code, module.__dict__)  # noqa: S102
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/brunobeckman/.openclaw/workspace/JusticeIndex/app.py", line 114, in <module>
+    year_range = st.select_slider("Years",
+        options=sorted(df["Year"].unique()),
+        value=(2019, 2024))
+  File "/Users/brunobeckman/.openclaw/workspace/JusticeIndex/.venv/lib/python3.13/site-packages/streamlit/runtime/metrics_util.py", line 532, in wrapped_func
+    result = non_optional_func(*args, **kwargs)
+  File "/Users/brunobeckman/.openclaw/workspace/JusticeIndex/.venv/lib/python3.13/site-packages/streamlit/elements/widgets/select_slider.py", line 358, in select_slider
+    return self._select_slider(
+           ~~~~~~~~~~~~~~~~~~~^
+        label=label,
+        ^^^^^^^^^^^^
+    ...<11 lines>...
+        width=width,
+        ^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/brunobeckman/.openclaw/workspace/JusticeIndex/.venv/lib/python3.13/site-packages/streamlit/elements/widgets/select_slider.py", line 404, in _select_slider
+    raise StreamlitAPIException("The `options` argument needs to be non-empty")
+streamlit.errors.StreamlitAPIException: The `options` argument needs to be non-empty
+  Stopping...

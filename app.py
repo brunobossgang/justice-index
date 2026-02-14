@@ -80,7 +80,12 @@ FOOTER = '<div class="footer">⚖️ Justice Index · Data from the <a href="htt
 # ── Data loading ──────────────────────────────────────────────
 @st.cache_data
 def load_data():
-    df = pd.read_csv("data/combined_fy19_fy24.csv", low_memory=False)
+    import os
+    pq = os.path.join(os.path.dirname(__file__), "data", "combined_fy19_fy24.parquet")
+    if os.path.exists(pq):
+        df = pd.read_parquet(pq)
+    else:
+        df = pd.read_csv("data/combined_fy19_fy24.csv", low_memory=False)
     df = df[
         (df["SENTTOT"] >= 0) & (df["SENTTOT"] < 470) &
         (df["NEWRACE"].isin([1, 2, 3])) &

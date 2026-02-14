@@ -13,7 +13,7 @@ from district_coords import DISTRICT_COORDS
 from regression_utils import (
     run_overall_regression, run_yearly_regression,
     run_offense_regressions, run_leniency_regression,
-    predict_sentence, compute_human_cost
+    predict_sentence, compute_human_cost, get_offense_trends
 )
 
 st.set_page_config(page_title="Justice Index", page_icon="⚖️", layout="wide")
@@ -490,29 +490,7 @@ elif page == "📈 The Trend":
                 "This gap hasn't moved in six years.")
 
     with tab3:
-        @st.cache_data
-        def compute_offense_trends(_df):
-            import statsmodels.api as sm_api
-            from regression_utils import _prepare_features
-            results = {}
-            for offense in ["Drug Trafficking", "Firearms", "Robbery"]:
-                years_data = []
-                for year in sorted(_df["Year"].unique()):
-                    sub = _df[(_df["Offense"] == offense) & (_df["Year"] == year)]
-                    if len(sub) < 100:
-                        continue
-                    try:
-                        X, y = _prepare_features(sub, include_offense_dummies=False)
-                        if len(y) < 50:
-                            continue
-                        m = sm_api.OLS(y, X).fit(cov_type='HC1')
-                        years_data.append({"Year": year, "Effect": round(m.params["Black"], 1)})
-                    except Exception:
-                        continue
-                results[offense] = pd.DataFrame(years_data)
-            return results
-
-        off_yearly = compute_offense_trends(df)
+        off_yearly = get_offense_trends(df)
 
         off_choice = st.selectbox("Select offense", ["Drug Trafficking", "Firearms", "Robbery"])
 

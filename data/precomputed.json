@@ -1,0 +1,604 @@
+{
+  "overall": {
+    "r_squared": 0.7358,
+    "n_obs": 322060,
+    "coefficients": [
+      {
+        "variable": "Black (vs White)",
+        "effect": 4.3,
+        "pvalue": 0.0,
+        "significant": true
+      },
+      {
+        "variable": "Hispanic (vs White)",
+        "effect": -0.32,
+        "pvalue": 0.121291,
+        "significant": false
+      },
+      {
+        "variable": "Female (vs Male)",
+        "effect": -9.2,
+        "pvalue": 0.0,
+        "significant": true
+      },
+      {
+        "variable": "Guideline Minimum",
+        "effect": 0.62,
+        "pvalue": 0.0,
+        "significant": true
+      },
+      {
+        "variable": "Criminal History Points",
+        "effect": 0.61,
+        "pvalue": 0.0,
+        "significant": true
+      },
+      {
+        "variable": "Age",
+        "effect": 0.0,
+        "pvalue": 0.456845,
+        "significant": false
+      },
+      {
+        "variable": "Non-Citizen (Illegal)",
+        "effect": 1.28,
+        "pvalue": 0.0,
+        "significant": true
+      },
+      {
+        "variable": "Weapon Involved",
+        "effect": 24.19,
+        "pvalue": 0.0,
+        "significant": true
+      }
+    ]
+  },
+  "model_params": {
+    "const": 5.742306,
+    "Black": 4.297272,
+    "Hispanic": -0.319518,
+    "Female": -9.197204,
+    "XMINSOR": 0.61586,
+    "CRIMPTS": 0.61092,
+    "AGE": 0.003963,
+    "IllegalAlien": 1.283298,
+    "WEAPON": 24.194657,
+    "off_1": -3.019196,
+    "off_4": 5.557408,
+    "off_5": -10.600247,
+    "off_7": 18.893216,
+    "off_13": 3.98109,
+    "off_16": -0.14878,
+    "off_17": -4.391471,
+    "off_21": -5.510109,
+    "off_22": -0.478742,
+    "off_26": 27.493584,
+    "off_27": 44.851424,
+    "off_30": -3.130463
+  },
+  "model_columns": [
+    "const",
+    "Black",
+    "Hispanic",
+    "Female",
+    "XMINSOR",
+    "CRIMPTS",
+    "AGE",
+    "IllegalAlien",
+    "WEAPON",
+    "off_1",
+    "off_4",
+    "off_5",
+    "off_7",
+    "off_13",
+    "off_16",
+    "off_17",
+    "off_21",
+    "off_22",
+    "off_26",
+    "off_27",
+    "off_30"
+  ],
+  "yearly": [
+    {
+      "Year": 2019,
+      "Black_Effect": 3.32,
+      "Black_pvalue": 0.0,
+      "Female_Effect": -7.76,
+      "Hispanic_Effect": 1.43,
+      "R2": 0.7512,
+      "N": 62873
+    },
+    {
+      "Year": 2020,
+      "Black_Effect": 3.64,
+      "Black_pvalue": 0.0,
+      "Female_Effect": -7.82,
+      "Hispanic_Effect": -0.7,
+      "R2": 0.7517,
+      "N": 52698
+    },
+    {
+      "Year": 2021,
+      "Black_Effect": 3.61,
+      "Black_pvalue": 0.0,
+      "Female_Effect": -10.27,
+      "Hispanic_Effect": -0.31,
+      "R2": 0.7249,
+      "N": 47485
+    },
+    {
+      "Year": 2022,
+      "Black_Effect": 5.02,
+      "Black_pvalue": 0.0,
+      "Female_Effect": -10.66,
+      "Hispanic_Effect": -1.52,
+      "R2": 0.7219,
+      "N": 53952
+    },
+    {
+      "Year": 2023,
+      "Black_Effect": 4.77,
+      "Black_pvalue": 0.0,
+      "Female_Effect": -9.77,
+      "Hispanic_Effect": -0.13,
+      "R2": 0.7289,
+      "N": 54098
+    },
+    {
+      "Year": 2024,
+      "Black_Effect": 5.19,
+      "Black_pvalue": 0.0,
+      "Female_Effect": -8.87,
+      "Hispanic_Effect": -0.72,
+      "R2": 0.7333,
+      "N": 50954
+    }
+  ],
+  "by_offense": [
+    {
+      "Offense": "Money Laundering",
+      "Black_Effect": 11.83,
+      "Black_pvalue": 0.0,
+      "Significance_Stars": "***",
+      "N": 5304
+    },
+    {
+      "Offense": "Robbery",
+      "Black_Effect": 9.5,
+      "Black_pvalue": 0.0,
+      "Significance_Stars": "***",
+      "N": 8170
+    },
+    {
+      "Offense": "National Defense",
+      "Black_Effect": 6.9,
+      "Black_pvalue": 0.299439,
+      "Significance_Stars": "",
+      "N": 931
+    },
+    {
+      "Offense": "Commercialized Vice",
+      "Black_Effect": 6.18,
+      "Black_pvalue": 0.05222,
+      "Significance_Stars": "",
+      "N": 315
+    },
+    {
+      "Offense": "Assault",
+      "Black_Effect": 5.01,
+      "Black_pvalue": 0.091867,
+      "Significance_Stars": "",
+      "N": 2428
+    },
+    {
+      "Offense": "Drug Trafficking",
+      "Black_Effect": 3.98,
+      "Black_pvalue": 0.0,
+      "Significance_Stars": "***",
+      "N": 102560
+    },
+    {
+      "Offense": "Firearms",
+      "Black_Effect": 3.42,
+      "Black_pvalue": 0.0,
+      "Significance_Stars": "***",
+      "N": 43666
+    },
+    {
+      "Offense": "Extortion/Racketeering",
+      "Black_Effect": 3.22,
+      "Black_pvalue": 0.36113,
+      "Significance_Stars": "",
+      "N": 543
+    },
+    {
+      "Offense": "Other",
+      "Black_Effect": 2.82,
+      "Black_pvalue": 0.005909,
+      "Significance_Stars": "**",
+      "N": 649
+    },
+    {
+      "Offense": "Fraud/Theft/Embezzlement",
+      "Black_Effect": 2.75,
+      "Black_pvalue": 0.0,
+      "Significance_Stars": "***",
+      "N": 20332
+    },
+    {
+      "Offense": "Tax",
+      "Black_Effect": 1.72,
+      "Black_pvalue": 0.049929,
+      "Significance_Stars": "*",
+      "N": 1590
+    },
+    {
+      "Offense": "Burglary/Trespass",
+      "Black_Effect": 1.67,
+      "Black_pvalue": 0.532266,
+      "Significance_Stars": "",
+      "N": 263
+    },
+    {
+      "Offense": "Forgery/Counterfeiting",
+      "Black_Effect": 1.4,
+      "Black_pvalue": 0.170309,
+      "Significance_Stars": "",
+      "N": 657
+    },
+    {
+      "Offense": "Immigration",
+      "Black_Effect": 1.15,
+      "Black_pvalue": 0.000108,
+      "Significance_Stars": "***",
+      "N": 111218
+    },
+    {
+      "Offense": "Drug Possession",
+      "Black_Effect": 0.84,
+      "Black_pvalue": 0.48828,
+      "Significance_Stars": "",
+      "N": 278
+    },
+    {
+      "Offense": "Admin of Justice",
+      "Black_Effect": 0.69,
+      "Black_pvalue": 0.497321,
+      "Significance_Stars": "",
+      "N": 2288
+    },
+    {
+      "Offense": "Bribery/Corruption",
+      "Black_Effect": 0.61,
+      "Black_pvalue": 0.648913,
+      "Significance_Stars": "",
+      "N": 1232
+    },
+    {
+      "Offense": "Kidnapping",
+      "Black_Effect": 0.3,
+      "Black_pvalue": 0.975644,
+      "Significance_Stars": "",
+      "N": 502
+    },
+    {
+      "Offense": "Prison Offenses",
+      "Black_Effect": -0.07,
+      "Black_pvalue": 0.882932,
+      "Significance_Stars": "",
+      "N": 2352
+    },
+    {
+      "Offense": "Stalking/Harassment",
+      "Black_Effect": -1.83,
+      "Black_pvalue": 0.267342,
+      "Significance_Stars": "",
+      "N": 1080
+    },
+    {
+      "Offense": "Murder",
+      "Black_Effect": -2.75,
+      "Black_pvalue": 0.755406,
+      "Significance_Stars": "",
+      "N": 1244
+    },
+    {
+      "Offense": "Child Pornography",
+      "Black_Effect": -4.13,
+      "Black_pvalue": 0.074697,
+      "Significance_Stars": "",
+      "N": 7261
+    },
+    {
+      "Offense": "Arson",
+      "Black_Effect": -4.33,
+      "Black_pvalue": 0.451142,
+      "Significance_Stars": "",
+      "N": 393
+    },
+    {
+      "Offense": "Obscenity/Sex Offenses",
+      "Black_Effect": -4.88,
+      "Black_pvalue": 1e-06,
+      "Significance_Stars": "***",
+      "N": 1410
+    },
+    {
+      "Offense": "Sexual Abuse",
+      "Black_Effect": -14.59,
+      "Black_pvalue": 0.0,
+      "Significance_Stars": "***",
+      "N": 4652
+    },
+    {
+      "Offense": "Individual Rights",
+      "Black_Effect": -14.87,
+      "Black_pvalue": 0.005831,
+      "Significance_Stars": "**",
+      "N": 311
+    }
+  ],
+  "leniency": [
+    {
+      "variable": "Black (vs White)",
+      "odds_ratio": 0.7496,
+      "pvalue": 0.0,
+      "significant": true
+    },
+    {
+      "variable": "Hispanic (vs White)",
+      "odds_ratio": 1.1922,
+      "pvalue": 0.0,
+      "significant": true
+    },
+    {
+      "variable": "Female (vs Male)",
+      "odds_ratio": 1.9514,
+      "pvalue": 0.0,
+      "significant": true
+    },
+    {
+      "variable": "Guideline Minimum",
+      "odds_ratio": 1.0099,
+      "pvalue": 0.0,
+      "significant": true
+    },
+    {
+      "variable": "Criminal History Points",
+      "odds_ratio": 0.9877,
+      "pvalue": 0.0,
+      "significant": true
+    },
+    {
+      "variable": "Age",
+      "odds_ratio": 1.0048,
+      "pvalue": 0.0,
+      "significant": true
+    },
+    {
+      "variable": "Non-Citizen (Illegal)",
+      "odds_ratio": 0.658,
+      "pvalue": 0.0,
+      "significant": true
+    },
+    {
+      "variable": "Weapon Involved",
+      "odds_ratio": 0.4491,
+      "pvalue": 0.0,
+      "significant": true
+    }
+  ],
+  "offense_trends": {
+    "Drug Trafficking": [
+      {
+        "Year": 2019,
+        "Effect": 1.9
+      },
+      {
+        "Year": 2020,
+        "Effect": 2.5
+      },
+      {
+        "Year": 2021,
+        "Effect": 4.0
+      },
+      {
+        "Year": 2022,
+        "Effect": 5.8
+      },
+      {
+        "Year": 2023,
+        "Effect": 4.9
+      },
+      {
+        "Year": 2024,
+        "Effect": 4.8
+      }
+    ],
+    "Firearms": [
+      {
+        "Year": 2019,
+        "Effect": 4.1
+      },
+      {
+        "Year": 2020,
+        "Effect": 2.6
+      },
+      {
+        "Year": 2021,
+        "Effect": 1.6
+      },
+      {
+        "Year": 2022,
+        "Effect": 3.9
+      },
+      {
+        "Year": 2023,
+        "Effect": 4.2
+      },
+      {
+        "Year": 2024,
+        "Effect": 3.6
+      }
+    ],
+    "Robbery": [
+      {
+        "Year": 2019,
+        "Effect": 6.3
+      },
+      {
+        "Year": 2020,
+        "Effect": 16.2
+      },
+      {
+        "Year": 2021,
+        "Effect": 1.7
+      },
+      {
+        "Year": 2022,
+        "Effect": 13.9
+      },
+      {
+        "Year": 2023,
+        "Effect": 10.6
+      },
+      {
+        "Year": 2024,
+        "Effect": 10.9
+      }
+    ]
+  },
+  "human_cost": {
+    "total_extra_months": 297311,
+    "total_extra_years": 24776,
+    "by_offense": [
+      {
+        "Offense": "Drug Trafficking",
+        "Black_Effect_Mo": 3.98,
+        "N_Black": 28916,
+        "Extra_Months": 115086,
+        "Extra_Years": 9590.5
+      },
+      {
+        "Offense": "Firearms",
+        "Black_Effect_Mo": 3.42,
+        "N_Black": 25465,
+        "Extra_Months": 87090,
+        "Extra_Years": 7257.5
+      },
+      {
+        "Offense": "Robbery",
+        "Black_Effect_Mo": 9.5,
+        "N_Black": 5153,
+        "Extra_Months": 48954,
+        "Extra_Years": 4079.5
+      },
+      {
+        "Offense": "Fraud/Theft/Embezzlement",
+        "Black_Effect_Mo": 2.75,
+        "N_Black": 7077,
+        "Extra_Months": 19462,
+        "Extra_Years": 1621.8
+      },
+      {
+        "Offense": "Money Laundering",
+        "Black_Effect_Mo": 11.83,
+        "N_Black": 1266,
+        "Extra_Months": 14977,
+        "Extra_Years": 1248.1
+      },
+      {
+        "Offense": "Assault",
+        "Black_Effect_Mo": 5.01,
+        "N_Black": 1092,
+        "Extra_Months": 5471,
+        "Extra_Years": 455.9
+      },
+      {
+        "Offense": "Immigration",
+        "Black_Effect_Mo": 1.15,
+        "N_Black": 1651,
+        "Extra_Months": 1899,
+        "Extra_Years": 158.2
+      },
+      {
+        "Offense": "Commercialized Vice",
+        "Black_Effect_Mo": 6.18,
+        "N_Black": 158,
+        "Extra_Months": 976,
+        "Extra_Years": 81.4
+      },
+      {
+        "Offense": "Tax",
+        "Black_Effect_Mo": 1.72,
+        "N_Black": 492,
+        "Extra_Months": 846,
+        "Extra_Years": 70.5
+      },
+      {
+        "Offense": "Extortion/Racketeering",
+        "Black_Effect_Mo": 3.22,
+        "N_Black": 172,
+        "Extra_Months": 554,
+        "Extra_Years": 46.2
+      },
+      {
+        "Offense": "National Defense",
+        "Black_Effect_Mo": 6.9,
+        "N_Black": 62,
+        "Extra_Months": 428,
+        "Extra_Years": 35.6
+      },
+      {
+        "Offense": "Admin of Justice",
+        "Black_Effect_Mo": 0.69,
+        "N_Black": 535,
+        "Extra_Months": 369,
+        "Extra_Years": 30.8
+      },
+      {
+        "Offense": "Forgery/Counterfeiting",
+        "Black_Effect_Mo": 1.4,
+        "N_Black": 237,
+        "Extra_Months": 332,
+        "Extra_Years": 27.6
+      },
+      {
+        "Offense": "Other",
+        "Black_Effect_Mo": 2.82,
+        "N_Black": 117,
+        "Extra_Months": 330,
+        "Extra_Years": 27.5
+      },
+      {
+        "Offense": "Bribery/Corruption",
+        "Black_Effect_Mo": 0.61,
+        "N_Black": 378,
+        "Extra_Months": 231,
+        "Extra_Years": 19.2
+      },
+      {
+        "Offense": "Burglary/Trespass",
+        "Black_Effect_Mo": 1.67,
+        "N_Black": 110,
+        "Extra_Months": 184,
+        "Extra_Years": 15.3
+      },
+      {
+        "Offense": "Drug Possession",
+        "Black_Effect_Mo": 0.84,
+        "N_Black": 87,
+        "Extra_Months": 73,
+        "Extra_Years": 6.1
+      },
+      {
+        "Offense": "Kidnapping",
+        "Black_Effect_Mo": 0.3,
+        "N_Black": 169,
+        "Extra_Months": 51,
+        "Extra_Years": 4.2
+      }
+    ]
+  }
+}

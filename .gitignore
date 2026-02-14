@@ -13,3 +13,6 @@ data/codebook_text.txt
 # Keep the combined slim CSV (24MB, needed for dashboard)
 !data/combined_fy19_fy24.csv
 !data/individual_fy24/slim.csv
+*.log
+add_plea*.py
+data/*.zip

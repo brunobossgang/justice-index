@@ -1,7 +1,7 @@
 "use client";
 
 import Section from "./Section";
-import data from "@/data/precomputed.json";
+import data from "@/data/precomputed";
 import {
   LineChart,
   Line,

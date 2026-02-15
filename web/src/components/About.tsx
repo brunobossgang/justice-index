@@ -1,6 +1,6 @@
 "use client";
 
-import data from "@/data/precomputed.json";
+import data from "@/data/precomputed";
 
 export default function About() {
   return (

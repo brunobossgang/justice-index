@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import Section from "./Section";
 import AnimatedCounter from "./AnimatedCounter";
-import data from "@/data/precomputed.json";
+import data from "@/data/precomputed";
 
 const cost = data.human_cost;
 const lifetimes = Math.round(cost.total_extra_years / 365);

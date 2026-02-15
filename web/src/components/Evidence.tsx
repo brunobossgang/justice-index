@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Section from "./Section";
-import data from "@/data/precomputed.json";
+import data from "@/data/precomputed";
 
 const coefficients = data.overall.coefficients;
 

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import AnimatedCounter from "./AnimatedCounter";
-import data from "@/data/precomputed.json";
+import data from "@/data/precomputed";
 
 const blackEffect = data.overall.coefficients.find(
   (c: { variable: string }) => c.variable === "Black (vs White)"

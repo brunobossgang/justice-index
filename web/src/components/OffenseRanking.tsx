@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Section from "./Section";
-import data from "@/data/precomputed.json";
+import data from "@/data/precomputed";
 
 const offenses = data.human_cost.by_offense
   .filter((o: { Black_Effect_Mo: number }) => o.Black_Effect_Mo > 0)

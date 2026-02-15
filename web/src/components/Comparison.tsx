@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import Section from "./Section";
-import data from "@/data/precomputed.json";
+import data from "@/data/precomputed";
 
 const sameCrime = data.same_crime as Record<
   string,

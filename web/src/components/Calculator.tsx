@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Section from "./Section";
-import data from "@/data/precomputed.json";
+import data from "@/data/precomputed";
 
 const params = data.model_params as Record<string, number>;
 

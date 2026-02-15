@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Section from "./Section";
-import data from "@/data/precomputed.json";
+import data from "@/data/precomputed";
 import {
   BarChart,
   Bar,

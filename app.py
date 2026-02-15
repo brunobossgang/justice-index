@@ -1,7 +1,7 @@
 """
 Justice Index — Interactive Dashboard v3
 Exploring racial and gender disparities in US federal sentencing.
-388,334 cases · FY2019–2024 · US Sentencing Commission data
+1.6 million cases · FY2002–2024 · US Sentencing Commission data
 """
 import streamlit as st
 import pandas as pd
@@ -85,11 +85,11 @@ FOOTER = '<div class="footer">⚖️ Justice Index · Data from the <a href="htt
 @st.cache_data
 def load_data():
     import os
-    pq = os.path.join(os.path.dirname(__file__), "data", "combined_fy19_fy24.parquet")
+    pq = os.path.join(os.path.dirname(__file__), "data", "combined_all_years.parquet")
     if os.path.exists(pq):
         df = pd.read_parquet(pq)
     else:
-        df = pd.read_csv("data/combined_fy19_fy24.csv", low_memory=False)
+        df = pd.read_csv("data/combined_all_years.csv", low_memory=False)
     df = df[
         (df["SENTTOT"] >= 0) & (df["SENTTOT"] < 470) &
         (df["NEWRACE"].isin([1, 2, 3])) &
@@ -156,7 +156,7 @@ MAJOR_OFFENSES = ["Drug Trafficking", "Firearms", "Fraud/Theft/Embezzlement",
 # ── Sidebar ───────────────────────────────────────────────────
 with st.sidebar:
     st.markdown("# ⚖️ Justice Index")
-    st.caption(f"**{_total_cases:,}** federal cases analyzed  \nFY2019 – FY2024")
+    st.caption(f"**{_total_cases:,}** federal cases analyzed  \nFY2002 – FY2024")
     st.divider()
 
     page = st.radio("Navigate", [
@@ -609,13 +609,13 @@ elif page == "📈 The Trend":
                 b_rate = sum(r['rate'] for r in b_rows) / len(b_rows)
                 st.error(f"📌 **Steady {w_rate - b_rate:.0f}-point gap.** White defendants receive below-guideline "
                         f"sentences ~{w_rate:.0f}% of the time. Black defendants: ~{b_rate:.0f}%. "
-                        "This gap hasn't moved in six years.")
+                        "This gap has persisted for over two decades.")
         else:
             w_rate = df[df["Race"] == "White"]["Below Guideline"].mean() * 100
             b_rate = df[df["Race"] == "Black"]["Below Guideline"].mean() * 100
             st.error(f"📌 **Steady {w_rate - b_rate:.0f}-point gap.** White defendants receive below-guideline "
                     f"sentences ~{w_rate:.0f}% of the time. Black defendants: ~{b_rate:.0f}%. "
-                    "This gap hasn't moved in six years.")
+                    "This gap has persisted for over two decades.")
 
     with tab3:
         off_yearly = get_offense_trends(df)
@@ -952,7 +952,7 @@ elif page == "🔎 Your District":
                     In {selected_dist}, Black defendants receive an average of {race_breakdown['Black']['mean']:.1f} months 
                     vs {race_breakdown['White']['mean']:.1f} months for White defendants — a gap of {abs(local_gap):.1f} months. 
                     Based on {int(race_breakdown['Black']['count']):,} Black and {int(race_breakdown['White']['count']):,} White 
-                    cases (FY2019–2024). Source: Justice Index / US Sentencing Commission data.
+                    cases (FY2002–2024). Source: Justice Index / US Sentencing Commission data.
                 </div>
                 """, unsafe_allow_html=True)
 
@@ -1091,7 +1091,7 @@ elif page == "🔎 Your District":
                 In {selected_dist}, Black defendants receive an average of {race_stats.loc['Black','mean']:.1f} months 
                 vs {race_stats.loc['White','mean']:.1f} months for White defendants — a gap of {abs(local_gap):.1f} months. 
                 Based on {int(race_stats.loc['Black','count']):,} Black and {int(race_stats.loc['White','count']):,} White 
-                cases (FY2019–2024). Source: Justice Index / US Sentencing Commission data.
+                cases (FY2002–2024). Source: Justice Index / US Sentencing Commission data.
             </div>
             """, unsafe_allow_html=True)
 
@@ -1121,7 +1121,7 @@ elif page == "💔 The Human Cost":
             extra years of prison time
         </div>
         <div style="font-size: 1em; color: #888; margin-top: 4px;">
-            served by Black defendants due to the racial sentencing gap (FY2019–2024)
+            served by Black defendants due to the racial sentencing gap (FY2002–2024)
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -1196,7 +1196,7 @@ elif page == "💔 The Human Cost":
             <li><b>{black_effect:.0f} months</b> is a child going from kindergarten to first grade — without their parent</li>
             <li><b>{black_effect:.0f} months</b> of lost wages, lost housing stability, lost community ties</li>
             <li><b>{black_effect:.0f} months</b> that compound — making reentry harder, recidivism more likely</li>
-            <li>Multiply by <b>{_n_black:,}</b> Black defendants in just six years</li>
+            <li>Multiply by <b>{_n_black:,}</b> Black defendants over 23 years</li>
         </ul>
     </div>
     """, unsafe_allow_html=True)
@@ -1204,7 +1204,7 @@ elif page == "💔 The Human Cost":
     st.markdown(f"""
     <div class="share-box">
         <div class="headline">📋 Share This</div>
-        Between 2019 and 2024, the racial sentencing gap in US federal courts cost Black defendants 
+        Between 2002 and 2024, the racial sentencing gap in US federal courts cost Black defendants 
         an estimated <b>{cost['total_extra_years']:,} extra years</b> of prison time — the equivalent 
         of <b>{lifetimes:.0f} full human lifetimes</b>. This is based on {_total_cases:,} cases from the 
         US Sentencing Commission, controlling for offense type, guidelines, criminal history, and demographics.
@@ -1231,7 +1231,7 @@ elif page == "🔬 The Evidence":
         with st.spinner("Running regression on 322,000+ cases..."):
             overall = run_overall_regression(df)
         st.markdown(f"### Full Model: What Predicts Sentence Length?")
-        st.markdown(f"OLS regression on **{overall['n_obs']:,}** cases (FY2019–2024). **R² = {overall['r_squared']:.2f}**. Robust standard errors (HC1).")
+        st.markdown(f"OLS regression on **{overall['n_obs']:,}** cases (FY2002–2024). **R² = {overall['r_squared']:.2f}**. Robust standard errors (HC1).")
 
         coef_df = pd.DataFrame(overall["coefficients"])
         main_vars = ["Black (vs White)", "Hispanic (vs White)", "Female (vs Male)",
@@ -1675,7 +1675,7 @@ elif page == "✊ Take Action":
         after controlling for every legal factor — and it's getting worse. 
         Contact your senators at <a href="https://www.senate.gov/senators/senators-contact.htm">senate.gov</a> 
         and ask them to support sentencing reform. 
-        See the full data at <a href="https://justiceindex.org">justiceindex.org</a>.
+        See the full data at <a href="https://samecrimedifferenttime.org">samecrimedifferenttime.org</a>.
     </div>
     """, unsafe_allow_html=True)
 
@@ -1705,7 +1705,7 @@ elif page == "📖 About":
 
     We analyzed **{_total_cases:,} federal criminal cases** from the
     [US Sentencing Commission](https://www.ussc.gov/research/datafiles/commission-datafiles)
-    spanning fiscal years 2019–2024. This is official government data covering every federal
+    spanning fiscal years 2002–2024. This is official government data covering every federal
     case sentenced under the US Sentencing Guidelines.
 
     ## The Method
@@ -1724,7 +1724,7 @@ elif page == "📖 About":
 
     > After controlling for every legal factor available in the data, **being Black predicts
     > approximately +{black_effect:.1f} extra months** of prison time compared to White defendants.
-    > This effect is statistically significant (p < 0.0001) every year from 2019–2024
+    > This effect is statistically significant (p < 0.0001) every year from 2002–2024
     > and is **getting worse, not better**.
 
     ## What We Can't Control For
@@ -1742,8 +1742,8 @@ elif page == "📖 About":
     ## How to Cite
 
     > Beckman, B. (2026). *Justice Index: Racial and Gender Disparities in US Federal Sentencing.*
-    > Analysis of US Sentencing Commission Individual Offender data, FY2019–2024.
-    > Available at: [justiceindex.org](https://justiceindex.org)
+    > Analysis of US Sentencing Commission Individual Offender data, FY2002–2024.
+    > Available at: [samecrimedifferenttime.org](https://samecrimedifferenttime.org)
 
     ## Open Source
 

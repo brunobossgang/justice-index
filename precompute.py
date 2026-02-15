@@ -70,11 +70,10 @@ def _safe(v):
 def main():
     import os
     print("Loading data...")
-    pq = os.path.join(os.path.dirname(__file__), "data", "combined_fy19_fy24.parquet")
-    if os.path.exists(pq):
-        raw = pd.read_parquet(pq)
-    else:
-        raw = pd.read_csv("data/combined_fy19_fy24.csv", low_memory=False)
+    csv_path = os.path.join(os.path.dirname(__file__), "data", "combined_all_years.csv")
+    if not os.path.exists(csv_path):
+        csv_path = "data/combined_fy19_fy24.csv"
+    raw = pd.read_csv(csv_path, low_memory=False)
 
     df = raw[
         (raw["SENTTOT"] >= 0) & (raw["SENTTOT"] < 470) &

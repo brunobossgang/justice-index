@@ -18,7 +18,7 @@ export default function Nav() {
   return (
     <nav className="fixed top-0 z-50 w-full bg-slate-950/80 backdrop-blur-md border-b border-white/5">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
-        <a href="#" className="text-sm font-bold tracking-wider text-white/90">
+        <a href="https://justice-index.org" className="text-sm font-bold tracking-wider text-white/90 hover:text-rose-400 transition-colors">
           JUSTICE INDEX
         </a>
         <button

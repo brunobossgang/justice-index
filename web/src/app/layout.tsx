@@ -15,6 +15,21 @@ export const metadata: Metadata = {
       "Black defendants receive nearly 4 extra months in federal prison — even after controlling for offense, criminal history, and other factors.",
     url: "https://samecrimedifferenttime.org",
     type: "website",
+    images: [
+      {
+        url: "https://samecrimedifferenttime.org/og.png",
+        width: 1200,
+        height: 630,
+        alt: "Same Crime, Different Time — +3.85 months longer sentences",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Same Crime. Different Time. | Justice Index",
+    description:
+      "Black defendants receive +3.85 months longer sentences. 1.3M cases, 23 years of USSC data.",
+    images: ["https://samecrimedifferenttime.org/og.png"],
   },
 };
 

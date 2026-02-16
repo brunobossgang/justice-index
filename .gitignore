@@ -18,3 +18,5 @@ add_plea*.py
 data/*.zip
 data/combined_fy19_fy24.parquet
 data/combined_fy19_fy24.csv
+data/combined_all_years.csv
+*.png

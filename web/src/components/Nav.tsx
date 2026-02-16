@@ -38,6 +38,14 @@ export default function Nav() {
               {l.label}
             </a>
           ))}
+          <a
+            href="https://samestopdifferentoutcome.org"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-rose-400/70 hover:text-rose-400 transition-colors font-medium"
+          >
+            Traffic Stops ↗
+          </a>
         </div>
       </div>
     </nav>

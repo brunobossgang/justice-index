@@ -46,6 +46,14 @@ export default function Nav() {
           >
             Traffic Stops ↗
           </a>
+          <a
+            href="https://sameloandifferentrate.org"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-rose-400/70 hover:text-rose-400 transition-colors font-medium"
+          >
+            Lending ↗
+          </a>
         </div>
       </div>
     </nav>

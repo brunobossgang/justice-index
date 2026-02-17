@@ -102,12 +102,14 @@ export default function About() {
         </div>
 
         <div className="mt-16 pt-8 border-t border-white/5 text-center text-white/30 text-sm">
-          <p>
-            © 2026 Justice Index · samecrimedifferenttime.org ·{" "}
-            <a href="https://github.com/brunobossgang/justice-index" className="hover:text-white/50">
-              GitHub
-            </a>
-          </p>
+          <div className="flex flex-wrap justify-center gap-4 mb-3">
+            <a href="https://justice-index.org" className="hover:text-white/50 transition">Justice Index</a>
+            <a href="https://samestopdifferentoutcome.org" className="hover:text-white/50 transition">Same Stop</a>
+            <a href="https://sameloandifferentrate.org" className="hover:text-white/50 transition">Same Loan</a>
+            <a href="https://github.com/brunobossgang/justice-index" target="_blank" rel="noopener noreferrer" className="hover:text-white/50 transition">GitHub</a>
+            <a href="https://instagram.com/justiceindex" target="_blank" rel="noopener noreferrer" className="hover:text-white/50 transition">Instagram</a>
+          </div>
+          <p>© 2026 Justice Index</p>
         </div>
       </div>
     </footer>

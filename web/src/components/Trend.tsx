@@ -29,6 +29,8 @@ export default function Trend() {
       <p className="text-white/50 max-w-2xl mb-10">
         The Black penalty has persisted every single year since 2002.
         After briefly narrowing around 2015-2016, it has rebounded to over 5 months.
+        The Hispanic effect (amber) fluctuates near zero — sometimes slightly above, sometimes below —
+        telling a fundamentally different story from the persistent Black penalty.
       </p>
 
       <div className="w-full h-[400px] md:h-[500px]">

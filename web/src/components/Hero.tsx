@@ -9,6 +9,10 @@ const blackEffect = data.overall.coefficients.find(
   (c: { variable: string }) => c.variable === "Black (vs White)"
 )!;
 
+const hispanicEffect = data.overall.coefficients.find(
+  (c: { variable: string }) => c.variable === "Hispanic (vs White)"
+)!;
+
 // 108,157 extra years / 365.25 / 24 = ~12.35 extra hours per hour
 // Per second: 12.35 / 3600 = 0.003430
 const EXTRA_HOURS_PER_SECOND = data.human_cost.total_extra_years / 365.25 / 24 / 3600;
@@ -79,6 +83,15 @@ export default function Hero() {
         <p className="mt-4 text-lg text-white/50">
           longer in federal prison than White defendants
         </p>
+
+        <div className="mt-6 rounded-xl bg-slate-800/50 border border-white/5 px-6 py-4 inline-block">
+          <p className="text-white/40 text-sm mb-1">Meanwhile, Hispanic defendants receive</p>
+          <p className="text-3xl font-bold text-amber-400">
+            <AnimatedCounter value={Math.abs(hispanicEffect.effect)} decimals={2} duration={2000} />
+            <span className="text-xl"> fewer months</span>
+          </p>
+          <p className="text-white/40 text-sm mt-1">than White defendants — a smaller but statistically significant difference</p>
+        </div>
 
         <div className="mt-12 flex flex-wrap justify-center gap-8 text-white/40 text-sm">
           <div>

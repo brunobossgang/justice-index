@@ -84,15 +84,29 @@ export default function Comparison() {
       {data.by_offense
         .filter((o: { Offense: string }) => o.Offense === offense)
         .map((o: { Offense: string; Black_Effect: number; N: number; Significance_Stars: string }) => (
-          <div key={o.Offense} className="mt-10 rounded-xl bg-slate-800/50 p-6 border border-white/5">
-            <p className="text-white/50 text-sm mb-1">Regression-controlled racial penalty for {o.Offense}</p>
-            <p className="text-3xl font-bold text-rose-500">
-              {o.Black_Effect > 0 ? "+" : ""}
-              {o.Black_Effect} months {o.Significance_Stars}
-            </p>
-            <p className="text-white/40 text-sm mt-1">
-              Based on {o.N.toLocaleString()} cases
-            </p>
+          <div key={o.Offense} className="mt-10 grid gap-4 md:grid-cols-2">
+            <div className="rounded-xl bg-slate-800/50 p-6 border border-white/5">
+              <p className="text-white/50 text-sm mb-1">Black penalty for {o.Offense}</p>
+              <p className="text-3xl font-bold text-rose-500">
+                {o.Black_Effect > 0 ? "+" : ""}
+                {o.Black_Effect} months {o.Significance_Stars}
+              </p>
+              <p className="text-white/40 text-sm mt-1">
+                Based on {o.N.toLocaleString()} cases
+              </p>
+            </div>
+            {stats.Hispanic && stats.White && (
+              <div className="rounded-xl bg-slate-800/50 p-6 border border-white/5">
+                <p className="text-white/50 text-sm mb-1">Hispanic vs White for {o.Offense}</p>
+                <p className="text-3xl font-bold text-amber-400">
+                  {(stats.Hispanic.mean - stats.White.mean) > 0 ? "+" : ""}
+                  {(stats.Hispanic.mean - stats.White.mean).toFixed(1)} months
+                </p>
+                <p className="text-white/40 text-sm mt-1">
+                  Raw average difference · {stats.Hispanic.count.toLocaleString()} Hispanic cases
+                </p>
+              </div>
+            )}
           </div>
         ))}
     </Section>

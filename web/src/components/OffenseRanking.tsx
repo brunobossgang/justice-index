@@ -25,6 +25,15 @@ export default function OffenseRanking() {
         by offense type — after controlling for all legal factors.
       </p>
 
+      <div className="mb-10 rounded-xl bg-amber-500/10 border border-amber-500/20 p-4 max-w-2xl">
+        <p className="text-amber-400 text-sm font-medium mb-1">📊 Hispanic defendants show a different pattern</p>
+        <p className="text-white/50 text-sm">
+          Overall, Hispanic defendants receive <span className="text-amber-400 font-semibold">0.27 fewer months</span> than
+          White defendants after controlling for legal factors. The disparity in federal sentencing
+          disproportionately affects Black defendants specifically.
+        </p>
+      </div>
+
       <div className="space-y-4">
         {offenses.map((o: { Offense: string; Black_Effect_Mo: number; N_Black: number }, i: number) => {
           const pct = (o.Black_Effect_Mo / maxEffect) * 100;

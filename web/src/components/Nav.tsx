@@ -54,6 +54,14 @@ export default function Nav() {
           >
             Lending ↗
           </a>
+          <a
+            href="https://instagram.com/justiceindex"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-rose-400/70 hover:text-rose-400 transition-colors font-medium"
+          >
+            Instagram ↗
+          </a>
         </div>
       </div>
     </nav>

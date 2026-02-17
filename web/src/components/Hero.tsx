@@ -116,8 +116,20 @@ export default function Hero() {
 
         <LiveTicker />
 
+        <div className="mt-8">
+          <a
+            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent("Black defendants get 3.85 months longer for the same crime. 1.3M federal sentences exposed. samecrimedifferenttime.org via @Justice_Index")}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-lg bg-white/10 hover:bg-white/20 px-5 py-2.5 text-sm font-medium text-white transition"
+          >
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            Share on X
+          </a>
+        </div>
+
         <motion.div
-          className="mt-10"
+          className="mt-8"
           animate={{ y: [0, 10, 0] }}
           transition={{ repeat: Infinity, duration: 2 }}
         >

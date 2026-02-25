@@ -1,87 +1,65 @@
-# ⚖️ Justice Index
+# ⚖️ Same Crime, Different Time
 
-**Analyzing racial, gender, and geographic bias in US federal sentencing.**
+[![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)](https://nextjs.org/)
+[![Python](https://img.shields.io/badge/Python-3.11+-blue?logo=python&logoColor=white)](https://python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Live](https://img.shields.io/badge/Live-samecrimedifferenttime.org-blue)](https://samecrimedifferenttime.org)
 
-388,334 federal criminal cases · FY2019–2024 · US Sentencing Commission data
+**Do people who commit the same crime get the same sentence? An analysis of 1,294,673 federal criminal cases reveals systemic racial disparities in US sentencing.**
 
-![Python](https://img.shields.io/badge/python-3.11+-blue)
-![Streamlit](https://img.shields.io/badge/streamlit-1.54+-red)
-![License](https://img.shields.io/badge/license-MIT-green)
+🔗 **Live:** [samecrimedifferenttime.org](https://samecrimedifferenttime.org)
+
+---
 
 ## Key Findings
 
-- **After controlling for offense, guidelines, criminal history, age, sex, and citizenship**, being Black adds ~4-5 extra months to your federal prison sentence
-- This racial penalty is **getting worse** — growing year over year from 2019 to 2024
-- The drug trafficking racial gap **tripled** over this period
-- Black defendants are **25% less likely** to receive below-guideline sentences
-- **Geographic lottery**: ~100 month spread between harshest and most lenient districts for the same crime
-- The **trial penalty** falls harder on Black defendants
+After controlling for offense type, guideline minimum, criminal history, age, sex, citizenship status, and weapon involvement:
 
-## Live Dashboard
-
-🔗 **[justiceindex.org](https://justiceindex.org)** (coming soon)
-
-8 interactive pages:
-1. **Same Crime, Different Time** — Side-by-side sentencing comparisons by race
-2. **The Trend** — Year-over-year controlled regression results
-3. **The Geographic Lottery** — Interactive bubble map of district disparities
-4. **Your District** — Look up any federal district and see how it compares
-5. **The Evidence** — Full regression results (OLS + logistic)
-6. **The Gender Gap** — Men vs women sentencing disparities
-7. **Plea vs Trial** — How the trial penalty varies by race
-8. **About** — Methodology, data sources, limitations
+- **Black defendants receive +3.85 months** longer sentences than white defendants
+- This disparity translates to **108,157 extra years** of incarceration across the dataset
+- OLS regression with robust standard errors (HC1) yields **R² = 0.74**
 
 ## Data
 
-All data comes from the [US Sentencing Commission](https://www.ussc.gov/research/datafiles/commission-datafiles) Individual Offender datafiles.
-
-- **FY2019–2023**: Parsed from SAS fixed-width `.dat` files using column positions from `.sas` syntax files
-- **FY2024**: Parsed from the full CSV release
-- **Combined dataset**: 388,334 cases, 18 variables
+- **Source:** [US Sentencing Commission](https://www.ussc.gov/) Individual Offender datafiles
+- **Scope:** 1,294,673 cases across fiscal years 2002–2024 (23 years)
+- **Unit of analysis:** Individual sentenced defendant in federal court
 
 ## Methodology
 
-**OLS Regression** with robust standard errors (HC1), controlling for:
-- Offense type (dummy variables for 12 major categories)
-- Guideline minimum sentence range
-- Criminal history points
-- Age, sex, citizenship
+Ordinary Least Squares (OLS) regression with heteroskedasticity-robust standard errors (HC1).
+
+**Controls:**
+- Offense type (primary guideline)
+- Guideline minimum sentence
+- Criminal history category
+- Age at sentencing
+- Sex
+- Citizenship status
 - Weapon involvement
 
-**Logistic Regression** for below-guideline sentence probability with the same controls.
+**Limitations:** Observational data cannot establish causation. Unmeasured confounders (e.g., quality of legal representation, plea bargain details) may affect results. The model explains 74% of variance — meaningful but not complete.
 
-R² ≈ 0.74 on 322,000+ cases.
+## Tech Stack
 
-## Run Locally
+- **Frontend:** React / Next.js, deployed on Vercel
+- **Analysis:** Python (statsmodels, pandas)
+- **Previous version:** Streamlit app (tagged as [`v1-streamlit`](https://github.com/brunobossgang/justice-index/releases/tag/v1-streamlit))
 
-```bash
-pip install -r requirements.txt
-streamlit run app.py
-```
+## Part of the Justice Index Project
 
-## Project Structure
+**[Justice Index](https://justice-index.org)** analyzes racial bias across American institutions. This is one of three live investigations:
 
-```
-├── app.py                  # Streamlit dashboard (main)
-├── regression_utils.py     # Live regression computation module
-├── districts.py            # Federal district code → name mapping
-├── district_coords.py      # District lat/lon for bubble map
-├── data/
-│   ├── combined_fy19_fy24.csv   # Combined 6-year dataset (24MB)
-│   └── individual_fy24/slim.csv # FY2024 slim extract
-├── parse_dat.py            # SAS .dat fixed-width file parser
-├── build_multiyear.py      # Multi-year dataset builder
-├── analyze.py              # Controlled comparison analysis
-├── regression.py           # Standalone regression analysis
-├── trends.py               # Multi-year trend analysis
-├── blog/                   # Blog post and Twitter thread drafts
-└── outreach/               # Journalist outreach materials
-```
-
-## Author
-
-**Bruno Beckman** — [GitHub](https://github.com/brunobossgang)
+| Investigation | Focus | Data |
+|---|---|---|
+| **[Same Crime, Different Time](https://samecrimedifferenttime.org)** | Federal sentencing | 1.3M cases |
+| **[Same Stop, Different Outcome](https://samestopdifferentoutcome.org)** | Traffic policing | 8.6M stops |
+| **[Same Loan, Different Rate](https://sameloandifferentrate.org)** | Mortgage lending | 1.9M applications |
 
 ## License
 
-MIT — use this data and code however you want. Attribution appreciated.
+MIT — see [LICENSE](LICENSE).
+
+## Author
+
+**Bruno Beckman** · [justice-index.org](https://justice-index.org)
